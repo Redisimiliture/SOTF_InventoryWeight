@@ -158,6 +158,8 @@ namespace InventoryWeight
         public static float PlayerInventoryWeight { get; set; }
         public static float RunSpeed = 5.4f;
         public static float WalkSpeed = 2.6f;
+        public static float SwimSpeed = 3f;
+        public static float CrouchSpeed = 3f;
 
         public class ItemIdAndAmount
         {
@@ -251,7 +253,6 @@ namespace InventoryWeight
 
             ItemIdToWeight = itemIdWeights;
         }
-
         public static void HandleNewItemInInventory(int itemId, int amount)
         {
             PlayerInventoryItems ??= new ItemIdAndAmount();
@@ -265,13 +266,29 @@ namespace InventoryWeight
             WeightUpdate();
         }
 
+        public static void HandleRemoveItemInInventory(int itemId, int amount)
+        {
+            PlayerInventoryItems ??= new ItemIdAndAmount();
+
+            PlayerInventoryItems.itemId.Remove(itemId);
+            PlayerInventoryItems.amount.Remove(amount);
+
+            PlayerInventoryWeight -= CalculateItemWeight(itemId, amount);
+
+            DebugManager.ConsoleLog($"Removed {amount} {itemId}");
+            WeightUpdate();
+        }
+
         public static void WeightUpdate()
         {
-            LocalPlayer.FpCharacter.SetRunSpeed((1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * RunSpeed);
-            DebugManager.ConsoleLog($"Player Walk Speed: {(1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * RunSpeed}");
-            LocalPlayer.FpCharacter.SetWalkSpeed((1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * WalkSpeed);
-            DebugManager.ConsoleLog($"Player Walk Speed: {(1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * WalkSpeed}");
-
+            LocalPlayer.FpCharacter.SetRunSpeed(Math.Max(0, (1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * RunSpeed));
+            DebugManager.ConsoleLog($"Player Run Speed: {Math.Max(0, (1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * RunSpeed)}");
+            LocalPlayer.FpCharacter.SetWalkSpeed(Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * WalkSpeed);
+            DebugManager.ConsoleLog($"Player Walk Speed: {Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * WalkSpeed}");
+            LocalPlayer.FpCharacter.SetSwimSpeed(Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * SwimSpeed);
+            DebugManager.ConsoleLog($"Player Swim Speed: {Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * SwimSpeed}");
+            LocalPlayer.FpCharacter._crouchSpeed = Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * SwimSpeed;
+            DebugManager.ConsoleLog($"Player Crouch Speed: {Math.Max(0, 1 - PlayerInventoryWeight / Config.MaxiumInventoryWeight.Value) * Config.SpeedMultiplier.Value * SwimSpeed}");
             DebugManager.ConsoleLog($"Player Weight: {PlayerInventoryWeight}");
         }
 
