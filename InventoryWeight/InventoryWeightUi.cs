@@ -8,6 +8,7 @@ namespace InventoryWeight
     {
         public static void Create()
         {
+
         }
     }
 }

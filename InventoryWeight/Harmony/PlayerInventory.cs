@@ -9,7 +9,9 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using TheForest.Items.Inventory;
+using TheForest.Utils;
 using static InventoryWeight.InventoryWeight;
+using static InventoryWeight.Managers.GameManager;
 
 namespace InventoryWeight.Harmony
 {
@@ -20,7 +22,7 @@ namespace InventoryWeight.Harmony
         {
             private static void Prefix(int itemId, int amount = 1, bool preventAutoEquip = false, bool wasCrafted = false, ItemInstance itemInstance = null)
             {
-                HandleNewItemInInventory(itemId, amount);
+                HandleAddedItemToInventory(itemId, amount);
             }
         }
         [HarmonyPatch(typeof(TheForest.Items.Inventory.PlayerInventory), nameof(TheForest.Items.Inventory.PlayerInventory.RemoveItem))]
@@ -28,7 +30,7 @@ namespace InventoryWeight.Harmony
         {
             private static void Prefix(int itemId, int amount = 1, bool allowAmountOverflow = false, bool shouldEquipPrevious = true, bool removeFromQuickSelect = true, ItemInstance itemInstance = null, bool instantDestroy = false)
             {
-                HandleRemoveItemInInventory(itemId, amount);
+                HandleRemovedItemFromInventory(itemId, amount);
             }
         }
     }
