@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/ToniMacaroni/RedLoader/main/MetadataSchema.json",
   "id": "InventoryWeight",
-  "author": "You",
-  "version": "1.0.0",
-  "description": "A mod that does something.",
-  "gameVersion": "1.0.0",
+  "author": "Redesimiliture",
+  "version": "1.0.1",
+  "description": "A mod that adds weight to your inventory.",
+  "gameVersion": "1.0.1",
   "type": "Mod",
-  "url": "..."
+  "url": "https://github.com/Redisimiliture/SOTF_InventoryWeight/blob/master/InventoryWeight/"
 }
