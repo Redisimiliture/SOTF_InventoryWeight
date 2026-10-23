@@ -21,37 +21,6 @@ namespace InventoryWeight
 {
     public class InventoryWeight : SonsMod
     {
-        public static void HandleAddedItemToInventory(int itemId, int amount)
-        {
-            DebugManager.ConsoleLog($"ItemID: {itemId}");
-            DebugManager.ConsoleLog($"Amount: {amount}");
-            DebugManager.ConsoleLog($"LocalPlayer.Inventory: {LocalPlayer.Inventory}");
-            if (LocalPlayer.Inventory.GetAvailableSpaceForItem(itemId) >= amount)
-            {
-                PlayerInventoryItems ??= new Dictionary<int, int>();
-
-                if (PlayerInventoryItems.ContainsKey(itemId)) { PlayerInventoryItems[itemId] += amount; }
-                else { PlayerInventoryItems.Add(itemId, amount); }
-                PlayerInventoryWeight += CalculateItemWeight(itemId, amount);
-
-                DebugManager.ConsoleLog($"Added {amount} {itemId}");
-
-                WeightUpdate();
-            }
-        }
-
-        public static void HandleRemovedItemFromInventory(int itemId, int amount)
-        {
-            PlayerInventoryItems ??= new Dictionary<int, int>();
-
-            if (amount > 1) { PlayerInventoryItems[itemId] -= amount; }
-            else { PlayerInventoryItems.Remove(itemId); }
-
-            PlayerInventoryWeight -= CalculateItemWeight(itemId, amount);
-
-            DebugManager.ConsoleLog($"Removed {amount} {itemId}");
-            WeightUpdate();
-        }
 
         public InventoryWeight()
         {
@@ -90,10 +59,6 @@ namespace InventoryWeight
                     string _debugtestvariable1 = (ItemIdAndAmount.Value > 1) ? "they weight" : "it weights";
                     RLog.Msg($"[IW] LocalPlayer has: {ItemIdAndAmount.Value} {ItemIdAndAmount.Key} in inventory");
                 }
-
-                RLog.Msg($"[IW] {PlayerInventoryWeight}, {CalculateInventoryWeight(PlayerInventoryItems)}");
-
-                Inventory.AddItem(231, 2);
             } 
         }
     }

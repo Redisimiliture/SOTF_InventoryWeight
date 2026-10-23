@@ -1,5 +1,6 @@
 using RedLoader;
 using SUI;
+using static InventoryWeight.Managers.WeightManager;
 
 namespace InventoryWeight
 {
@@ -78,6 +79,7 @@ namespace InventoryWeight
         // Same as the callback in "CreateSettings". Called when the settings ui is closed.
         public static void OnSettingsUiClosed()
         {
+            BuildItemIdWeights();
         }
     }
 }
