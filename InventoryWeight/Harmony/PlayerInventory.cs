@@ -10,8 +10,8 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using TheForest.Items.Inventory;
 using TheForest.Utils;
-using static InventoryWeight.InventoryWeight;
 using static InventoryWeight.Managers.GameManager;
+using static InventoryWeight.Managers.WeightManager;
 
 namespace InventoryWeight.Harmony
 {
@@ -33,5 +33,38 @@ namespace InventoryWeight.Harmony
                 HandleRemovedItemFromInventory(itemId, amount);
             }
         }
+        public static void HandleAddedItemToInventory(int itemId, int amount)
+        {
+            DebugManager.ConsoleLog($"ItemID: {itemId}");
+            DebugManager.ConsoleLog($"Amount: {amount}");
+            if (LocalPlayer.Inventory == null) { return; }
+            DebugManager.ConsoleLog($"LocalPlayer.Inventory: {LocalPlayer.Inventory}");
+            if (LocalPlayer.Inventory.GetAvailableSpaceForItem(itemId) >= amount)
+            {
+                PlayerInventoryItems ??= new Dictionary<int, int>();
+
+                if (PlayerInventoryItems.ContainsKey(itemId)) { PlayerInventoryItems[itemId] += amount; }
+                else { PlayerInventoryItems.Add(itemId, amount); }
+                PlayerInventoryWeight += CalculateItemWeight(itemId, amount);
+
+                DebugManager.ConsoleLog($"Added {amount} {itemId}");
+
+                WeightUpdate();
+            }
+        }
+
+        public static void HandleRemovedItemFromInventory(int itemId, int amount)
+        {
+            PlayerInventoryItems ??= new Dictionary<int, int>();
+
+            if (amount > 1) { PlayerInventoryItems[itemId] -= amount; }
+            else { PlayerInventoryItems.Remove(itemId); }
+
+            PlayerInventoryWeight -= CalculateItemWeight(itemId, amount);
+
+            DebugManager.ConsoleLog($"Removed {amount} {itemId}");
+            WeightUpdate();
+        }
     }
 }
+
